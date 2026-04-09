@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Connexion — CRM Fondation Claude Pompidou</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=DM+Mono:wght@400;500&display=swap');
+
+:root {
+  --bg: #f5f4f0;
+  --white: #ffffff;
+  --text: #1a1a2e;
+  --text2: #5a5a7a;
+  --text3: #9a9ab0;
+  --border: #e2e0da;
+  --accent: #2563eb;
+  --accent-bg: #eff6ff;
+  --ok: #059669;
+  --ok-bg: #ecfdf5;
+  --ko: #dc2626;
+  --ko-bg: #fef2f2;
+  --ko-border: #fca5a5;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: var(--bg);
+  font-family: 'DM Sans', sans-serif;
+  color: var(--text);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.login-wrap {
+  width: 100%;
+  max-width: 420px;
+}
+
+.login-header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+.login-logo {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px; height: 56px;
+  background: var(--text);
+  border-radius: 14px;
+  font-size: 24px;
+  margin-bottom: 16px;
+}
+.login-title {
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.4px;
+  color: var(--text);
+}
+.login-sub {
+  font-size: 13px;
+  color: var(--text3);
+  margin-top: 6px;
+  font-family: 'DM Mono', monospace;
+}
+
+.login-card {
+  background: white;
+  border: 1.5px solid var(--border);
+  border-radius: 16px;
+  padding: 32px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+}
+
+.form-group { margin-bottom: 18px; }
+.form-label {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text2);
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  margin-bottom: 7px;
+}
+.input-wrap {
+  position: relative;
+}
+.form-input {
+  width: 100%;
+  border: 1.5px solid var(--border);
+  border-radius: 9px;
+  padding: 11px 44px 11px 14px;
+  font-family: 'DM Mono', monospace;
+  font-size: 13px;
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.15s;
+  background: white;
+  letter-spacing: 0.5px;
+}
+.form-input:focus { border-color: var(--accent); }
+.form-input.error { border-color: var(--ko); }
+.toggle-pwd {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text3);
+  font-size: 16px;
+  padding: 2px;
+  transition: color 0.15s;
+}
+.toggle-pwd:hover { color: var(--text); }
+
+.form-hint {
+  font-size: 11px;
+  color: var(--text3);
+  margin-top: 6px;
+  font-family: 'DM Mono', monospace;
+  line-height: 1.5;
+}
+.form-error {
+  font-size: 12px;
+  color: var(--ko);
+  margin-top: 8px;
+  font-weight: 500;
+  display: none;
+  background: var(--ko-bg);
+  border: 1px solid var(--ko-border);
+  border-radius: 7px;
+  padding: 8px 12px;
+}
+.form-error.visible { display: block; }
+
+.btn-login {
+  width: 100%;
+  padding: 12px;
+  background: var(--accent);
+  color: white;
+  border: none;
+  border-radius: 9px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 8px;
+}
+.btn-login:hover { background: #1d4ed8; }
+.btn-login:disabled { opacity: 0.6; cursor: not-allowed; }
+
+.login-footer {
+  margin-top: 20px;
+  padding-top: 18px;
+  border-top: 1px solid var(--border);
+  font-size: 11px;
+  color: var(--text3);
+  font-family: 'DM Mono', monospace;
+  line-height: 1.6;
+  text-align: center;
+}
+.login-footer a { color: var(--accent); text-decoration: none; }
+.login-footer a:hover { text-decoration: underline; }
+
+.spinner {
+  width: 16px; height: 16px;
+  border: 2px solid rgba(255,255,255,0.4);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  display: none;
+}
+.btn-login.loading .spinner { display: block; }
+.btn-login.loading .btn-text { display: none; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.already-logged {
+  background: var(--ok-bg);
+  border: 1.5px solid #6ee7b7;
+  border-radius: 10px;
+  padding: 14px 16px;
+  display: none;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+  font-size: 13px;
+  color: var(--ok);
+  font-weight: 500;
+}
+.already-logged.visible { display: flex; }
+</style>
+</head>
+<body>
+
+<div class="login-wrap">
+
+  <div class="login-header">
+    <div class="login-logo">🏛️</div>
+    <div class="login-title">Fondation Claude Pompidou</div>
+    <div class="login-sub">CRM · Gestion bénévolat</div>
+  </div>
+
+  <div class="login-card">
+
+    <div class="already-logged" id="alreadyLogged">
+      ✅ Vous êtes déjà connecté·e.
+      <a href="benevoles.html" style="margin-left:auto; color:var(--accent); font-size:12px;">Accéder →</a>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Token API Baserow</label>
+      <div class="input-wrap">
+        <input
+          type="password"
+          id="tokenInput"
+          class="form-input"
+          placeholder="Collez votre token ici…"
+          autocomplete="off"
+          spellcheck="false"
+        />
+        <button class="toggle-pwd" type="button" onclick="togglePwd()" title="Afficher/masquer">👁</button>
+      </div>
+      <div class="form-hint">
+        Trouvez votre token sur app.baserow.io<br>
+        → Settings → API tokens
+      </div>
+    </div>
+
+    <div class="form-error" id="formError"></div>
+
+    <button class="btn-login" id="loginBtn" onclick="handleLogin()">
+      <span class="btn-text">Se connecter →</span>
+      <div class="spinner"></div>
+    </button>
+
+    <div class="login-footer">
+      Le token est stocké uniquement dans votre navigateur.<br>
+      Il n'est jamais transmis à un serveur tiers.<br><br>
+      <a href="https://app.baserow.io" target="_blank">Ouvrir Baserow ↗</a>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// Config inline (pas de fichier JS externe sur la page de login)
+const STORAGE_KEY = 'fcp_crm_token';
+const BASE_URL    = 'https://api.baserow.io';
+const TABLE_ID    = 837810;
+
+// Vérifie si déjà connecté
+window.addEventListener('load', () => {
+  const existing = localStorage.getItem(STORAGE_KEY);
+  if (existing) {
+    document.getElementById('alreadyLogged').classList.add('visible');
+    document.getElementById('tokenInput').value = existing;
+  }
+});
+
+function togglePwd() {
+  const inp = document.getElementById('tokenInput');
+  inp.type = inp.type === 'password' ? 'text' : 'password';
+}
+
+function showError(msg) {
+  const el = document.getElementById('formError');
+  el.textContent = msg;
+  el.classList.add('visible');
+  document.getElementById('tokenInput').classList.add('error');
+}
+function clearError() {
+  document.getElementById('formError').classList.remove('visible');
+  document.getElementById('tokenInput').classList.remove('error');
+}
+
+async function handleLogin() {
+  clearError();
+  const token = document.getElementById('tokenInput').value.trim();
+
+  if (!token) {
+    showError('Veuillez saisir votre token API Baserow.');
+    return;
+  }
+
+  const btn = document.getElementById('loginBtn');
+  btn.disabled = true;
+  btn.classList.add('loading');
+
+  try {
+    // Test du token contre la vraie API
+    const res = await fetch(`${BASE_URL}/api/database/rows/table/${TABLE_ID}/?size=1`, {
+      headers: { 'Authorization': `Token ${token}` }
+    });
+
+    if (res.status === 401 || res.status === 403) {
+      showError('Token invalide. Vérifiez votre token sur app.baserow.io.');
+      return;
+    }
+    if (!res.ok) {
+      showError(`Erreur de connexion (${res.status}). Réessayez dans quelques instants.`);
+      return;
+    }
+
+    // Token valide → sauvegarde et redirection
+    localStorage.setItem(STORAGE_KEY, token);
+    window.location.href = 'benevoles.html';
+
+  } catch (e) {
+    showError('Impossible de contacter Baserow. Vérifiez votre connexion internet.');
+  } finally {
+    btn.disabled = false;
+    btn.classList.remove('loading');
+  }
+}
+
+// Connexion avec Entrée
+document.getElementById('tokenInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') handleLogin();
+});
+</script>
+</body>
+</html>
