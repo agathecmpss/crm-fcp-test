@@ -261,7 +261,7 @@ function renderTable() {
     const date   = col.date    ? Utils.formatDate(row[col.date])     : '—';
     const badge  = Utils.statutBadgeClass(stat);
 
-    return `<tr class="clickable" onclick="openPanel(${row.id})">
+    return `<tr class="clickable" onclick="window.location.href='benevole-fiche.html?id=${row.id}'">
       <td>
         <div class="cell-primary">${Utils.escHtml(nom)}</div>
         <div class="cell-secondary">${Utils.escHtml(prenom)}</div>
