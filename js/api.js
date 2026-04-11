@@ -46,6 +46,21 @@ const API = {
     return this.get(`database/rows/table/${tableId}/${rowId}/?user_field_names=true`);
   },
 
+  // Met à jour une ligne (PATCH - uniquement les champs envoyés)
+  async updateRow(tableId, rowId, data) {
+    const res = await fetch(`${FCP_CONFIG.baseUrl}/api/database/rows/table/${tableId}/${rowId}/?user_field_names=true`, {
+      method: 'PATCH',
+      headers: this.headers(),
+      body: JSON.stringify(data)
+    });
+    if (res.status === 401) { Auth.logout(); throw new Error('Token invalide ou expiré'); }
+    if (!res.ok) {
+      const err = await res.text();
+      throw new Error(`Erreur API ${res.status} : ${err}`);
+    }
+    return res.json();
+  },
+
   // Récupère TOUTES les lignes (pagination automatique)
   async getAllRows(tableId) {
     let rows = [];
